@@ -16,15 +16,34 @@ symbol_count = {
 
 def get_slot_machine_spin(rows, cols, symbols):
     all_symbols = []
-    for symbol, sumbol_count in symbols.items():
+    for symbol, symbol_count in symbols.items():
         for i in range(symbol_count):
             all_symbols.append(symbol)
             
     columns = []
     for col in range(cols):
-        columns = []
+        column = []
+        current_symbols = all_symbols[:] # copying with [:]
         for row in range(rows):
-            value = random.choice(all_symbols)
+            value = random.choice(current_symbols)
+            current_symbols.remove(value) # .remove() is going to find the first instance of the value in the list and get rid of it.
+            column.append(value)
+            
+        columns.append(column)
+        
+    return columns
+
+# this operation is referred to as transposing
+def print_slot_machine(columns):
+    for row in range(len(columns[0])):
+        # Looping through all of the items inside of column it's giving us every individual column
+        for i, column in enumerate(columns): # enumerate gives you the index like (0,1,2) as well as the item
+            if i != len(columns) - 1: # if i is not equal to the index print the pipe otherwise don't print the pipe
+                print(column[row], "|", end=" | ") # end tells the end statement what to end line with now 
+            else:
+                print(column[row], end="")
+                
+        print() # empty print statement brings us down to the next line
 
 def deposit():
     while True:
@@ -83,10 +102,10 @@ def main():
         else:
             break
         
-    bet = get_bet()
     total_bet = bet * lines
     print(f"You are betting ${bet} on {lines} lines. Total bet is equal to: ${total_bet}")
     
-    print(balance, lines)
+    slots = get_slot_machine_spin(ROWS, COLS, symbol_count)
+    print_slot_machine(slots)
     
 main()
